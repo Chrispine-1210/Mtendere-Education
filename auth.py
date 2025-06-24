@@ -104,7 +104,6 @@ def get_current_admin_user(current_user: User = Depends(get_current_user)) -> Us
         )
     return current_user
 
-
 def create_admin_user(db: Session, email: str, password: str, full_name: str) -> User:
     """Create an admin user"""
     hashed_password = get_password_hash(password)
