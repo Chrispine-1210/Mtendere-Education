@@ -1,131 +1,112 @@
-# Mtendere Education Consult - Admin Interface
+# Mtendere Education Consult - Full Stack Web Application
 
 ## Overview
 
-This is a comprehensive admin interface built with FastAPI for Mtendere Education Consult. The system provides a complete educational content management platform with user management, application processing, blog management, and analytics capabilities. It features a modern web-based admin interface using fastapi-amis-admin with email notifications and detailed logging.
+This is a full-stack web application for Mtendere Education Consult, an educational consultancy platform that helps students apply to international universities and access scholarships. The application features a modern React frontend with a Node.js/Express backend, using PostgreSQL for data persistence.
 
 ## System Architecture
 
-### Backend Architecture
-- **Framework**: FastAPI (Python) with async/await support
-- **Admin Interface**: fastapi-amis-admin for auto-generated admin UI
-- **Database ORM**: SQLModel (built on SQLAlchemy) for type-safe database operations
-- **Authentication**: JWT-based authentication with bcrypt password hashing
-- **Email Service**: FastMail with Gmail SMTP integration for notifications
-
 ### Frontend Architecture
-- **Admin UI**: Admin interface using AMis JSON schema
-- **Templates**: Jinja2 templating for custom pages
-- **Static Assets**: Bootstrap 5 and Font Awesome for styling
-- **Charts**: Chart.js for analytics visualization
+- **Framework**: React 18 with TypeScript
+- **Routing**: Wouter (lightweight React router)
+- **State Management**: TanStack Query (React Query) for server state management
+- **UI Framework**: Radix UI components with shadcn/ui design system
+- **Styling**: Tailwind CSS with CSS custom properties for theming
+- **Form Handling**: React Hook Form with Zod validation
+- **Build Tool**: Vite for fast development and optimized builds
+
+### Backend Architecture
+- **Runtime**: Node.js with TypeScript
+- **Framework**: Express.js with middleware for CORS, JSON parsing, and request logging
+- **Database ORM**: Drizzle ORM with PostgreSQL
+- **Authentication**: JWT-based authentication with bcrypt password hashing
+- **File Uploads**: Multer middleware for handling CV and transcript uploads
+- **Web Scraping**: JSDOM for extracting content from external educational websites
+
+### Database Design
+- **Users Table**: Authentication and role-based access (admin/user/applicant)
+- **Applications Table**: Student application data with file references
+- **Blog Posts Table**: Content management with publish/draft states
+- **Site Data Table**: Dynamic content scraped from external sources
+- **Media Files Table**: File metadata and storage references
 
 ## Key Components
 
-### Database Models
-- **User Management**: User model with role-based access (admin, user, applicant)
-- **Applications**: Application tracking with status workflow (pending, approved, rejected, under_review)
-- **Blog System**: BlogPost model with publishing capabilities
-- **Analytics**: VisitorLog model for tracking user interactions
-- **Services**: Service model for educational offerings
+### Authentication System
+- JWT token-based authentication stored in localStorage
+- Role-based access control (admin, user, applicant)
+- Protected routes for admin functionality
+- Automatic token validation and refresh
 
-### Authentication & Authorization
-- JWT token-based authentication with configurable expiration
-- Role-based access control (RBAC) with UserRole enum
-- Secure password hashing using bcrypt
-- Admin user auto-creation on startup
+### Application Management
+- Complete student application workflow
+- File upload system for CVs and transcripts
+- Application status tracking (pending, approved, rejected)
+- Admin dashboard for application review and management
 
-### Email Notifications
-- Automated email notifications for admin actions (create, update, delete)
-- Gmail SMTP integration with app password support
-- Configurable notification recipients
-- HTML email templates with professional styling
+### Content Management System
+- Dynamic blog post creation and management
+- Rich text editing capabilities
+- Image upload and media management
+- Content publication workflow
 
-### Analytics & Logging
-- Request/response logging middleware
-- Visitor analytics with IP tracking and user agent detection
-- Performance monitoring with response time tracking
-- Custom analytics dashboard with charts and metrics
+### Web Scraping Integration
+- Automated content extraction from educational websites
+- Dynamic site data updates for hero sections, services, and testimonials
+- Structured data storage for consistent display
 
 ## Data Flow
 
-1. **User Registration/Login**: Users authenticate via JWT tokens, with admin users having elevated privileges
-2. **Application Processing**: Applicants submit applications → Admin reviews → Status updates → Email notifications
-3. **Content Management**: Admin creates/edits blog posts → Publishing workflow → Public display
-4. **Analytics Collection**: Middleware captures visitor data → Database storage → Dashboard visualization
-5. **Email Notifications**: Admin actions trigger → Email service → SMTP delivery to configured recipients
+1. **User Registration/Login**: Users register through the frontend, credentials are validated against the database, JWT tokens are issued for authenticated sessions
+2. **Application Submission**: Students fill out application forms, upload documents, data is validated and stored with pending status
+3. **Admin Review**: Admins access protected routes, review applications, update statuses, manage user accounts
+4. **Content Updates**: Admins can create/edit blog posts, update site content, trigger web scraping updates
+5. **File Management**: Uploaded files are stored in the uploads directory, metadata is tracked in the database
 
 ## External Dependencies
 
-### Required Services
-- **Database**: SQLite (development) or PostgreSQL (production)
-- **Email Service**: Gmail SMTP (requires app password)
-- **File Storage**: Local filesystem (configurable for cloud storage)
+### Core Dependencies
+- **@neondatabase/serverless**: PostgreSQL database adapter for serverless environments
+- **@tanstack/react-query**: Server state management and caching
+- **@radix-ui/***: Accessible UI component primitives
+- **drizzle-orm**: Type-safe SQL query builder and ORM
+- **bcrypt**: Password hashing and validation
+- **jsonwebtoken**: JWT token generation and verification
+- **multer**: Multipart form data handling for file uploads
+- **jsdom**: DOM manipulation for web scraping
 
-### Python Packages
-- `fastapi` - Web framework
-- `fastapi-amis-admin` - Admin interface generator
-- `sqlmodel` - Database ORM with type safety
-- `fastapi-mail` - Email service integration
-- `passlib[bcrypt]` - Password hashing
-- `python-jose[cryptography]` - JWT token handling
-- `uvicorn` - ASGI server
-
-### Frontend Libraries
-- Bootstrap 5 for responsive UI
-- Font Awesome for icons
-- Chart.js for analytics visualization
+### Development Dependencies
+- **typescript**: Static type checking
+- **vite**: Fast build tool and development server
+- **tailwindcss**: Utility-first CSS framework
+- **tsx**: TypeScript execution for Node.js
 
 ## Deployment Strategy
 
-### Environment Configuration
-- Environment-based configuration using `.env` files
-- Separate configurations for development (SQLite) and production (PostgreSQL)
-- Configurable CORS origins for production deployment
-- File upload limits and security settings
+### Development Environment
+- Vite development server with HMR (Hot Module Replacement)
+- PostgreSQL database with Drizzle migrations
+- File uploads stored locally in uploads directory
+- Environment variables for database connection and JWT secrets
 
-### Database Strategy
-- SQLite for development and testing
-- PostgreSQL recommended for production
-- Database migrations handled by SQLModel/SQLAlchemy
-- Automatic table creation on startup
+### Production Deployment
+- **Build Process**: Vite builds client-side assets, esbuild bundles server code
+- **Database**: PostgreSQL with connection pooling via Neon Database
+- **File Storage**: Local file system with configurable upload directory
+- **Environment**: NODE_ENV-based configuration switching
+- **Port Configuration**: Configurable port binding (default 5000)
 
-### Security Considerations
-- JWT secret key configuration (must be changed in production)
-- CORS middleware with configurable origins
-- Request logging and monitoring
-- File upload security with size limits and type restrictions
-
-### Scalability Features
-- Async/await throughout for concurrent request handling
-- Configurable pagination limits
-- Database connection pooling
-- Middleware for performance monitoring
+### Replit Configuration
+- Modules: nodejs-20, web, postgresql-16
+- Auto-deployment with build and start scripts
+- Port forwarding from internal 5000 to external 80
+- Database provisioning through Replit's PostgreSQL module
 
 ## Changelog
 
-```
 Changelog:
-- June 24, 2025. Initial setup - Created comprehensive FastAPI admin interface
-- June 24, 2025. Implemented database models for all content types (users, applications, blog posts, testimonials, team members, scholarships, insights, analytics)
-- June 24, 2025. Added JWT authentication system with role-based access control
-- June 24, 2025. Created email notification service with HTML templates
-- June 24, 2025. Built analytics dashboard with visitor tracking and metrics visualization
-- June 24, 2025. Implemented request logging middleware and security headers
-- June 24, 2025. Added professional responsive UI with Bootstrap 5 and custom CSS
-- June 24, 2025. Connected PostgreSQL database with automatic table creation
-- June 24, 2025. Created API endpoints for content management (/api/users, /api/applications, /api/blog-posts)
-- June 24, 2025. Application successfully running on port 5000 with full functionality
-- June 24, 2025. Implemented complete CRUD operations for all content types (create, read, update, delete)
-- June 24, 2025. Added professional modal forms for blog posts, testimonials, team members, and scholarships
-- June 24, 2025. Built comprehensive API endpoints with proper validation and error handling
-- June 24, 2025. Created interactive admin dashboard with working forms and data management capabilities
-- June 24, 2025. Rebuilt admin interface from scratch with complete CRUD functionality for all content types
-- June 24, 2025. Fixed all JavaScript errors and implemented professional Bootstrap 5 interface with modal forms
-- June 24, 2025. Successfully deployed production-ready admin system with working create, edit, delete operations
-```
+- June 27, 2025. Initial setup
 
 ## User Preferences
 
-```
 Preferred communication style: Simple, everyday language.
-```
